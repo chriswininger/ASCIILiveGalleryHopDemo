@@ -1,0 +1,72 @@
+var fs = require('fs');
+var camera = require('camera');
+var Canvas = require('canvas');
+var ascii = require('./node_modules/ascii/lib/ascii.js');
+var fs = require('fs');
+var spawn = require('child_process').spawn;
+var blessed = require('blessed');
+
+// Create a screen object
+var screen = blessed.screen();
+// create box to display hello world
+var box = blessed.box({
+	top: 'center',
+	left: 'center',
+	width: '900',
+	height: '900',
+	content: 'Rendering...',
+	tags: true,
+	border: {
+		type: 'line'
+	},
+	style: {
+		fg: 'white',
+		border: {
+			fg: '#f0f0f0'
+		}
+	}
+});
+// add box to screen
+screen.append(box);
+// Render the screen.
+screen.render();
+// Quit on Escape, q, or Control-C.
+screen.key(['escape', 'q', 'C-c'], function(ch, key) {
+	webcam.destroy();
+	return process.exit(0);
+});
+// Focus our element.
+box.focus();
+
+
+// init cam
+var webcam = camera.createStream();
+webcam.on('error', function (err) {
+	box.setContent('error reading data' + err)
+});
+webcam.on('data', function (buffer) {
+	render(buffer);
+});
+
+webcam.snapshot(function (err, buffer){});
+webcam.record(1000, function (buffers){});
+
+// --- Helper functions ---
+// Render an image buffer to ascii
+function render(buffer) {
+	try {
+		//console.log('rendering: ' + require('util').inspect(buffer));
+		var pic = new Canvas.Image;
+		var newWidth = 1000;
+		var newHeight = 900;
+		pic.src = buffer;
+		var cv = new Canvas(newWidth, newHeight);
+		var ctx = cv.getContext('2d');
+		ctx.drawImage(pic, 0, 0, newWidth, newHeight);
+
+		box.setContent(ascii.init('cli', ctx, pic, newWidth, newHeight));
+		screen.render();
+	} catch (ex) {
+		box.setContent('error: ' + ex);
+	}
+}

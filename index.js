@@ -58,10 +58,11 @@ function render(buffer) {
 		//console.log('rendering: ' + require('util').inspect(buffer));
 		var pic = new Canvas.Image;
 		var newWidth = 1000;
-		var newHeight = 900;
+		var newHeight = 1000;
 		pic.src = buffer;
 		var cv = new Canvas(newWidth, newHeight);
 		var ctx = cv.getContext('2d');
+
 		ctx.drawImage(pic, 0, 0, newWidth, newHeight);
 
 		box.setContent(ascii.init('cli', ctx, pic, newWidth, newHeight));

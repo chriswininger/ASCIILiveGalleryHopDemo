@@ -519,4 +519,4 @@ module.exports = {
         "ffffff": [255,255,255]
     },
     html: {}
-}
+};

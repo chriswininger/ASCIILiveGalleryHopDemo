@@ -11,20 +11,20 @@ var cnt = 0,
     g,
     b;
 
-    console.log('{');
+    process.stdout.write('{');
     for (r = 0; r < 256; r++) {
         for (g = 0; g < 256; g++) {
             for (b = 0; b < 256; b++) {
                 hash = pad(r.toString(16)) + pad(g.toString(16)) + pad(b.toString(16));
                 c = getColor(r, g, b);
-                var msg = util.format('"%s":"%s"', hash, c.replace('\033', '\\033'));
-                console.log(msg);
+                var msg = util.format('"%s":"%s",', hash, c.replace('\033', '\\033'));
+                process.stdout.write(msg);
                 cnt++;
             }
         }
     }
 
-    console.log('}');
+    process.stdout.write('}');
 
 
 function getColor(r, g, b) {

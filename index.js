@@ -1,7 +1,7 @@
 var fs = require('fs');
 var camera = require('camera');
 var Canvas = require('canvas');
-var ascii = require('./node_modules/ascii/lib/ascii.js');
+var ascii = require(__dirname + '/lib/ascii/ascii.js');
 var fs = require('fs');
 var spawn = require('child_process').spawn;
 var blessed = require('blessed');

@@ -1,3 +1,14 @@
+/**
+ * Author: Chris Wininger
+ * Project: ASCII Live Gallery Hop Demo 2015
+ * File: index.js
+ *
+ * This is the main thread which initializing the webcam and begins processing
+ *   the input
+ *
+ * @type {childrenOfPid|exports}
+ */
+
 var fs = require('fs');
 var camera = require('camera');
 var Canvas = require('canvas');

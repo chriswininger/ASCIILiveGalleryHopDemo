@@ -12,7 +12,9 @@
 var psTree = require('ps-tree');
 var exec = require('child_process').exec;
 
-var interval = 60000;
+var MINUTE= 60000;
+var interval = MINUTE*5;
+
 var mainProc;
 
 _startMainProc();

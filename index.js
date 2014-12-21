@@ -49,9 +49,9 @@ screen.key(['escape', 'q', 'C-c'], function(ch, key) {
 // Focus our element.
 box.focus();
 
-
+var idx = 0;
 // init cam
-var webcam = camera.createStream();
+var webcam = camera.createStream(idx);
 webcam.on('error', function (err) {
 	box.setContent('error reading data' + err)
 });

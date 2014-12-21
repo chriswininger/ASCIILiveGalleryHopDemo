@@ -14,11 +14,16 @@ var camera = require('camera');
 var Canvas = require('canvas');
 var ascii = require(__dirname + '/lib/ascii/ascii.js');
 var fs = require('fs');
-var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 var blessed = require('blessed');
 
+var screenCaptureCommand = "import -window `xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2` screenshot.png",
+	defaultStatus = 'running...';
+
 // Create a screen object
-var screen = blessed.screen();
+var screen = blessed.screen(),
+	program = blessed.program();
+program.enableMouse();
 // create box to display hello world
 var box = blessed.box({
 	top: 'center',
@@ -37,14 +42,50 @@ var box = blessed.box({
 		}
 	}
 });
+
+var statusBox = blessed.box({
+	bottom: '0',
+	left: 'center',
+	width: '900',
+	height: '75',
+	content: defaultStatus,
+	tags: true,
+	border: {
+		type: 'line'
+	},
+	style: {
+		fg: 'white',
+		border: {
+			fg: '#f0f0f0'
+		}
+	}
+});
 // add box to screen
 screen.append(box);
+screen.append(statusBox);
 // Render the screen.
 screen.render();
 // Quit on Escape, q, or Control-C.
 screen.key(['escape', 'q', 'C-c'], function(ch, key) {
 	webcam.destroy();
+	program.disableMouse();
 	return process.exit(0);
+});
+screen.on('mouse', function(data) {
+	if (data.action === 'mouseup') return;
+
+	if (data.action === 'mousedown' && data.button === 'left') {
+		takeSnapShot(function (err) {
+			if (err) {
+				statusBox.setContent('error: ' + err);
+			} else {
+				statusBox.setContent('You look great kid!');
+				setTimeout(function () {
+					statusBox.setContent(defaultStatus);
+				}, 4000);
+			}
+		});
+	}
 });
 // Focus our element.
 box.focus();
@@ -81,4 +122,8 @@ function render(buffer) {
 	} catch (ex) {
 		box.setContent('error: ' + ex);
 	}
+}
+
+function takeSnapShot (complete) {
+	exec(screenCaptureCommand, {}, complete);
 }

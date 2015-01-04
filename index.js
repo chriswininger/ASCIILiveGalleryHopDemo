@@ -72,6 +72,21 @@ screen.key(['escape', 'q', 'C-c'], function(ch, key) {
 	program.disableMouse();
 	return process.exit(0);
 });
+//catches ctrl+c event
+//process.on('SIGINT', exitHandler);
+//catches uncaught exceptions
+//process.on('uncaughtException', exitHandler);
+function exitHandler() {
+	box.setContent('exiting...');
+	if (webcam) webcam.destroy();
+	if (program) program.disableMouse();
+
+	setTimeout(function () {
+		return process.exit(0);
+	},1000);
+}
+
+
 screen.on('mouse', function(data) {
 	if (data.action === 'mouseup') return;
 

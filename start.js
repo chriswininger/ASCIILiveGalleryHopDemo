@@ -13,7 +13,7 @@ var psTree = require('ps-tree');
 var exec = require('child_process').exec;
 
 var MINUTE= 60000;
-var interval = MINUTE*5;
+var interval = MINUTE*0.5;
 
 var mainProc;
 
@@ -23,7 +23,7 @@ setInterval(_killMainProcess, interval);
 
 function _killMainProcess () {
 	console.log('stopping main process: ' + mainProc.pid);
-    _killTree(mainProc.pid);
+    _killTree(mainProc.pid, 'SIGTERM');
 }
 
 function _startMainProc () {

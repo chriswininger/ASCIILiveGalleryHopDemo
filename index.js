@@ -20,6 +20,7 @@ var blessed = require('blessed');
 var screenCaptureCommand = "import -window `xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2` screenshot.png",
 	defaultStatus = 'running...';
 
+var width = '850';
 // Create a screen object
 var screen = blessed.screen(),
 	program = blessed.program();
@@ -28,7 +29,7 @@ program.enableMouse();
 var box = blessed.box({
 	top: 'center',
 	left: 'center',
-	width: '900',
+	width: width,
 	height: '900',
 	content: 'Rendering...',
 	tags: true,
@@ -46,7 +47,7 @@ var box = blessed.box({
 var statusBox = blessed.box({
 	bottom: '0',
 	left: 'center',
-	width: '900',
+	width: width,
 	height: '75',
 	content: defaultStatus,
 	tags: true,

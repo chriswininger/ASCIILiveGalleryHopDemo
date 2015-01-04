@@ -27,7 +27,7 @@ function _killMainProcess () {
 }
 
 function _startMainProc () {
-    mainProc = exec('xterm -fg SkyBlue -bg black -fullscreen  -e "export TERM=xterm-256color && node ./index.js"', function (error, stdout, stderr){
+    mainProc = exec('xterm -fg SkyBlue -bg black -fullscreen  -fa "Monospace" -fs 10 -e "export TERM=xterm-256color && node ./index.js"', function (error, stdout, stderr){
         if (error) console.error('error starting main process: ' + error);
     });
     if (mainProc) {

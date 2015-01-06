@@ -9,56 +9,9 @@
  *
  * @type {childrenOfPid|exports}
  */
-var psTree = require('ps-tree');
 var exec = require('child_process').exec;
-
-var MINUTE= 60000;
-var interval = MINUTE*0.5;
-
-var mainProc;
-
-_startMainProc();
-setInterval(_killMainProcess, interval);
+exec('xterm -fg SkyBlue -bg black -fullscreen  -fa "Monospace" -fs 10 -e "export TERM=xterm-256color && node ./processWatcher.js"', function (error) {
+    if (error) console.error('error starting main process: ' + error);
+});
 
 
-function _killMainProcess () {
-	console.log('stopping main process: ' + mainProc.pid);
-    _killTree(mainProc.pid, 'SIGTERM');
-}
-
-function _startMainProc () {
-    mainProc = exec('xterm -fg SkyBlue -bg black -fullscreen  -fa "Monospace" -fs 10 -e "export TERM=xterm-256color && node ./index.js"', function (error, stdout, stderr){
-        if (error) console.error('error starting main process: ' + error);
-    });
-    if (mainProc) {
-        mainProc.on('close', function (code) {
-            mainProc.removeAllListeners('close');
-            console.log('main process (' + mainProc.pid + ') exited with code ' + code + '\n restarting the process');
-            _startMainProc();
-        });
-    }
-}
-
-// Kills the whole process tree (adapted from http://krasimirtsonev.com/blog/article/Nodejs-managing-child-processes-starting-stopping-exec-spawn)
-function _killTree (pid, signal, callback) {
-	signal   = signal || 'SIGKILL';
-	callback = callback || function () {};
-	var killTree = true;
-	if(killTree) {
-		psTree(pid, function (err, children) {
-			[pid].concat(
-				children.map(function (p) {
-					return p.PID;
-				})
-			).forEach(function (tpid) {
-					try { process.kill(tpid, signal) }
-					catch (ex) { }
-				});
-			callback();
-		});
-	} else {
-		try { process.kill(pid, signal) }
-		catch (ex) { }
-		callback();
-	}
-}

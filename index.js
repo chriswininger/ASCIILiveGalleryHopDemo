@@ -9,16 +9,23 @@
  * @type {childrenOfPid|exports}
  */
 
-var fs = require('fs');
-var camera = require('camera');
-var Canvas = require('canvas');
-var ascii = require(__dirname + '/lib/ascii/ascii.js');
-var fs = require('fs');
-var exec = require('child_process').exec;
-var blessed = require('blessed');
+var camera = require('camera'),
+    Canvas = require('canvas'),
+    ascii = require(__dirname + '/lib/ascii/ascii.js'),
+    fs = require('fs'),
+    exec = require('child_process').exec,
+    blessed = require('blessed'),
+    nconf = require('nconf'),
+    crypto = require('crypto');
 
-var screenCaptureCommand = "import -window `xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2` screenshot.png",
-	defaultStatus = 'running...';
+
+nconf.argv()
+    .env()
+    .file({ file: 'config.json' });
+
+var screenCaptureCommand = "import -window `xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2`",
+	defaultStatus = 'running...',
+    idx = nconf.get('idx');
 
 var width = '850';
 // Create a screen object
@@ -72,20 +79,6 @@ screen.key(['escape', 'q', 'C-c'], function(ch, key) {
 	program.disableMouse();
 	return process.exit(0);
 });
-//catches ctrl+c event
-//process.on('SIGINT', exitHandler);
-//catches uncaught exceptions
-//process.on('uncaughtException', exitHandler);
-function exitHandler() {
-	box.setContent('exiting...');
-	if (webcam) webcam.destroy();
-	if (program) program.disableMouse();
-
-	setTimeout(function () {
-		return process.exit(0);
-	},1000);
-}
-
 
 screen.on('mouse', function(data) {
 	if (data.action === 'mouseup') return;
@@ -106,7 +99,6 @@ screen.on('mouse', function(data) {
 // Focus our element.
 box.focus();
 
-var idx = 0;
 // init cam
 var webcam = camera.createStream(idx);
 webcam.on('error', function (err) {
@@ -141,5 +133,5 @@ function render(buffer) {
 }
 
 function takeSnapShot (complete) {
-	exec(screenCaptureCommand, {}, complete);
+	exec(screenCaptureCommand + ' ./snapshots/' + crypto.randomBytes(10).toString('hex') + '.png', {}, complete);
 }

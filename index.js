@@ -74,11 +74,10 @@ screen.append(statusBox);
 // Render the screen.
 screen.render();
 // Quit on Escape, q, or Control-C.
-screen.key(['escape', 'q', 'C-c'], function(ch, key) {
-	webcam.destroy();
-	program.disableMouse();
-	return process.exit(0);
-});
+screen.key(['escape', 'q', 'C-c'], _exitHandler);
+
+process.on('exit', _exitHandler);
+process.on('SIGINT', _exitHandler);
 
 screen.on('mouse', function(data) {
 	if (data.action === 'mouseup') return;
@@ -134,4 +133,10 @@ function render(buffer) {
 
 function takeSnapShot (complete) {
 	exec(screenCaptureCommand + ' ./snapshots/' + crypto.randomBytes(10).toString('hex') + '.png', {}, complete);
+}
+
+function _exitHandler() {
+	webcam.destroy();
+	program.disableMouse();
+	return process.exit(0);
 }

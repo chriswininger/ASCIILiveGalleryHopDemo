@@ -22,6 +22,9 @@ _startMainProc();
 setInterval(_killMainProcess, interval);
 
 
+process.on('exit', _exitHandler);
+process.on('SIGINT', _exitHandler);
+
 function _killMainProcess () {
 	console.log('stopping main process: ' + mainProc.pid);
 	mainProc.kill();
@@ -38,4 +41,10 @@ function _startMainProc () {
 			_startMainProc();
 		});
 	}
+}
+
+function _exitHandler () {
+	console.log('exiting demo');
+	mainProc.removeAllListeners();
+	mainProc.kill(mainProc.pid, 'SIGINT');
 }

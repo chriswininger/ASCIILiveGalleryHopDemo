@@ -19,7 +19,7 @@ var interval = MINUTE*5;
 var mainProc;
 
 _startMainProc();
-setInterval(_killMainProcess, interval);
+setInterval(_refreshMainProcess, interval);
 
 
 process.on('exit', _exitHandler);
@@ -30,21 +30,26 @@ function _killMainProcess () {
 	mainProc.kill();
 }
 
+function _refreshMainProcess () {
+	_killMainProcess();
+	_startMainProc();
+}
+
 function _startMainProc () {
 	mainProc = spawn('node', ['index.js'], {
 		stdio: 'inherit'
 	});
 	if (mainProc) {
-		mainProc.on('close', function (code) {
+		/*mainProc.on('close', function (code) {
 			mainProc.removeAllListeners('close');
 			console.log('main process (' + mainProc.pid + ') exited with code ' + code + '\n restarting the process');
 			_startMainProc();
-		});
+		});*/
 	}
 }
 
 function _exitHandler () {
 	console.log('exiting demo');
 	mainProc.removeAllListeners();
-	mainProc.kill(mainProc.pid, 'SIGINT');
+	mainProc.kill();
 }

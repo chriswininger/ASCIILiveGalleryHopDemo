@@ -25,7 +25,8 @@ nconf.argv()
 
 var screenCaptureCommand = "import -window `xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2`",
 	defaultStatus = 'running...',
-    idx = nconf.get('idx');
+    idx = nconf.get('idx'),
+	noVid = nconf.get('noVideo');
 
 var width = '850';
 // Create a screen object
@@ -112,19 +113,18 @@ webcam.record(1000, function (buffers){});
 
 // --- Helper functions ---
 // Render an image buffer to ascii
+var newWidth = 1000;
+var newHeight = 1000;
 function render(buffer) {
 	try {
 		//console.log('rendering: ' + require('util').inspect(buffer));
 		var pic = new Canvas.Image;
-		var newWidth = 1000;
-		var newHeight = 1000;
 		pic.src = buffer;
-		var cv = new Canvas(newWidth, newHeight);
-		var ctx = cv.getContext('2d');
+		var ctx = (new Canvas(newWidth, newHeight)).getContext('2d');
 
 		ctx.drawImage(pic, 0, 0, newWidth, newHeight);
 
-		box.setContent(ascii.init('cli', ctx, pic, newWidth, newHeight));
+		box.setContent(ascii.init('cli', ctx, pic, newWidth, newHeight, noVid));
 		screen.render();
 	} catch (ex) {
 		box.setContent('error: ' + ex);
@@ -136,6 +136,7 @@ function takeSnapShot (complete) {
 }
 
 function _exitHandler() {
+	console.log('cleaning up');
 	webcam.destroy();
 	program.disableMouse();
 	return process.exit(0);

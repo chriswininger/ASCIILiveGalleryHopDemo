@@ -5,5 +5,5 @@
     "mongo_connection": "mongodb://localhost:27017/ascii_demo",
     "noVideo": false,
     "refreshRate": 500,
-    "statusHeight": "70"
+    "statusHeight": "60"
 }

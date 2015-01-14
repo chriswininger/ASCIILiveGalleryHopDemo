@@ -26,9 +26,14 @@ nconf.argv()
 var screenCaptureCommand = "import -window `xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2`",
 	defaultStatus = 'running...',
     idx = nconf.get('idx'),
-	noVid = nconf.get('noVideo');
+	noVid = nconf.get('noVideo'),
+	webcam;
 
+// Render an image buffer to ascii
+var newWidth = 1000;
+var newHeight = 1000;
 var width = '850';
+
 // Create a screen object
 var screen = blessed.screen(),
 	program = blessed.program();
@@ -99,24 +104,41 @@ screen.on('mouse', function(data) {
 // Focus our element.
 box.focus();
 
-
-// TODO(CAW) Should be able to modify camera cam = new cv.VideoCapture idx, add line after to call cam.set(CV_CAP_PROP_FRAME_WIDTH, 640); cam.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
-// init cam
-var webcam = camera.createStream(idx);
-webcam.on('error', function (err) {
-	box.setContent('error reading data' + err)
-});
-webcam.on('data', function (buffer) {
-	render(buffer);
-});
-
-webcam.snapshot(function (err, buffer){});
-webcam.record(1000, function (buffers){});
+if (nconf.get('testDimensions')) {
+	runDimensionTest();
+} else {
+	runDemo();
+}
 
 // --- Helper functions ---
-// Render an image buffer to ascii
-var newWidth = 1000;
-var newHeight = 1000;
+function runDemo () {
+	// TODO(CAW) Should be able to modify camera cam = new cv.VideoCapture idx, add line after to call cam.set(CV_CAP_PROP_FRAME_WIDTH, 640); cam.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
+	// init cam
+	webcam = camera.createStream(idx);
+	webcam.on('error', function (err) {
+		box.setContent('error reading data' + err)
+	});
+	webcam.on('data', function (buffer) {
+		render(buffer);
+	});
+
+	webcam.snapshot(function (err, buffer){});
+	webcam.record(1000, function (buffers){});
+}
+
+function runDimensionTest () {
+	box.setContent('running dimension test');
+	screen.render();
+
+	var str = '';
+	for (var y = 0; y < 100; y++) {
+		str += y + '\n';
+	}
+	box.setContent(str);
+	screen.render();
+
+}
+
 function render(buffer) {
 	try {
 		//console.log('rendering: ' + require('util').inspect(buffer));

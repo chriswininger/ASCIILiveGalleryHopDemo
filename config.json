@@ -1,5 +1,9 @@
 {
     "idx": 0,
+    "maxLines": 51,
+    "wordWrapWidth": 200,
     "mongo_connection": "mongodb://localhost:27017/ascii_demo",
-    "noVideo": true
+    "noVideo": false,
+    "refreshRate": 500,
+    "statusHeight": "70"
 }

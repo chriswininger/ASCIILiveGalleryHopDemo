@@ -27,12 +27,13 @@ var screenCaptureCommand = "import -window `xprop -root 32x '\t$0' _NET_ACTIVE_W
 	defaultStatus = 'running...',
     idx = nconf.get('idx'),
 	noVid = nconf.get('noVideo'),
+	refreshRate = nconf.get('refreshRate'),
+	statusHeight = nconf.get('statusHeight'),
+	newWidth = 1000,
+	newHeight = 1000,
+	width = '850',
 	webcam;
 
-// Render an image buffer to ascii
-var newWidth = 1000;
-var newHeight = 1000;
-var width = '850';
 
 // Create a screen object
 var screen = blessed.screen(),
@@ -61,7 +62,7 @@ var statusBox = blessed.box({
 	bottom: '0',
 	left: 'center',
 	width: width,
-	height: '75',
+	height: statusHeight,
 	content: defaultStatus,
 	tags: true,
 	border: {
@@ -123,7 +124,7 @@ function runDemo () {
 	});
 
 	webcam.snapshot(function (err, buffer){});
-	webcam.record(1000, function (buffers){});
+	webcam.record(refreshRate, function (buffers){});
 }
 
 function runDimensionTest () {

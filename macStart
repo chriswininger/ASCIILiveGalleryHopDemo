@@ -1,2 +1,3 @@
 #/bin/bash
 TERM=xterm-256color node processWatcher.js
+# set font-size to 13

@@ -10,7 +10,7 @@
  * @type {childrenOfPid|exports}
  */
 var exec = require('child_process').exec;
-var proc = exec('xterm -fg SkyBlue -bg black -fullscreen  -fa "Monospace" -fs 10 -e "export TERM=xterm-256color && node ./processWatcher.js"', function (error) {
+var proc = exec('xterm -fg SkyBlue -bg black -fullscreen  -fa "Monospace" -fs 8 -e "export TERM=xterm-256color && node ./processWatcher.js"', function (error) {
     if (error) console.error('error starting main process: ' + error);
 });
 

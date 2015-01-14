@@ -23,7 +23,7 @@ nconf.argv()
     .env()
     .file({ file: 'config.json' });
 
-var screenCaptureCommand = "import -window `xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2`",
+var screenCaptureCommand = nconf.get('screenCaptureCommand'),
 	defaultStatus = 'running...',
     idx = nconf.get('idx'),
 	noVid = nconf.get('noVideo'),

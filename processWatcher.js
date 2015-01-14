@@ -39,17 +39,16 @@ function _startMainProc () {
 	mainProc = spawn('node', ['index.js'], {
 		stdio: 'inherit'
 	});
-	if (mainProc) {
-		/*mainProc.on('close', function (code) {
-			mainProc.removeAllListeners('close');
-			console.log('main process (' + mainProc.pid + ') exited with code ' + code + '\n restarting the process');
-			_startMainProc();
-		});*/
-	}
 }
 
 function _exitHandler () {
 	console.log('exiting demo');
-	mainProc.removeAllListeners();
-	mainProc.kill();
+	try {
+		mainProc.removeAllListeners();
+		mainProc.kill();
+	} catch (ex) {
+		console.error('error exiting demo: ' + ex);
+	}
+
+	process.exit(0);
 }

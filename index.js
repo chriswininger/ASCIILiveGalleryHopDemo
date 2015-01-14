@@ -99,6 +99,8 @@ screen.on('mouse', function(data) {
 // Focus our element.
 box.focus();
 
+
+// TODO(CAW) Should be able to modify camera cam = new cv.VideoCapture idx, add line after to call cam.set(CV_CAP_PROP_FRAME_WIDTH, 640); cam.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
 // init cam
 var webcam = camera.createStream(idx);
 webcam.on('error', function (err) {
@@ -137,7 +139,12 @@ function takeSnapShot (complete) {
 
 function _exitHandler() {
 	console.log('cleaning up');
-	webcam.destroy();
-	program.disableMouse();
+	try {
+		webcam.destroy();
+		program.disableMouse();
+	} catch (ex) {
+		console.error('error in cleanup: ' + ex);
+	}
+
 	return process.exit(0);
 }

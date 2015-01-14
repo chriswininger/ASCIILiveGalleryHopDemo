@@ -1,5 +1,5 @@
 {
     "idx": 0,
     "mongo_connection": "mongodb://localhost:27017/ascii_demo",
-    "noVideo": true
+    "noVideo": false
 }

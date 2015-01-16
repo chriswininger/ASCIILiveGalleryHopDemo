@@ -18,6 +18,8 @@
         "jade": "~1.8.2",
         "multer": "~0.1.7",
         "request": "~2.51.0",
-        "restler": "~3.2.2"
+        "restler": "~3.2.2",
+        "twitter": "~1.0.3",
+        "node-twitter": "~0.5.2"
     }
 }

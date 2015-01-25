@@ -7,5 +7,9 @@
     "refreshRate": 500,
     "statusHeight": "60",
     "screenCaptureCommand": "screencapture -R150,60,1618,950",
-    "twitterStatus": "#apitest Every picture tells a story..."
+    "twitterStatus": "#apitest Every picture tells a story...",
+    "consumer_key": "",
+    "consumer_secret": "",
+    "access_token_key": "",
+    "access_token_secret": ""
 }

@@ -29,8 +29,8 @@ var screenCaptureCommand = nconf.get('screenCaptureCommand'),
 	noVid = nconf.get('noVideo'),
 	refreshRate = nconf.get('refreshRate'),
 	statusHeight = nconf.get('statusHeight'),
-	newWidth = 1000,
-	newHeight = 1000,
+	newWidth = nconf.get('newWidth'),
+	newHeight = nconf.get('newHeight'),
 	width = '850',
 	webcam;
 
@@ -131,8 +131,10 @@ function runDemo () {
 	});
 
 	// start the recording
-	webcam.snapshot(function (err, buffer){});
-	webcam.record(refreshRate, function (buffers){});
+	setTimeout(function() {
+		webcam.snapshot(function (err, buffer){});
+		webcam.record(refreshRate, function (buffers){});
+	}, 100);
 }
 
 function runDimensionTest () {

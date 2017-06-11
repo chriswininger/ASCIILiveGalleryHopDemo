@@ -6,6 +6,8 @@
     "noVideo": false,
     "refreshRate": 500,
     "statusHeight": "60",
+    "newWidth": 1000,
+    "newHeight": 1000,
     "screenCaptureCommand": "screencapture -R150,60,1618,950",
     "twitterStatus": "#apitest Every picture tells a story...",
     "consumer_key": "",

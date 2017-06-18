@@ -9,14 +9,17 @@
  * @type {childrenOfPid|exports}
  */
 
-var camera = require('camera'),
-    Canvas = require('canvas'),
-    ascii = require(__dirname + '/lib/ascii/ascii.js'),
-    fs = require('fs'),
-    exec = require('child_process').exec,
-    blessed = require('blessed'),
-    nconf = require('nconf'),
-    crypto = require('crypto');
+const cv = require('opencv');
+const camFps = 32;
+const camInterval = 1000 /camFps;
+const ascii = require(__dirname + '/lib/ascii/ascii.js');
+const fs = require('fs');
+const exec = require('child_process').exec;
+const blessed = require('blessed');
+const nconf = require('nconf');
+const crypto = require('crypto');
+
+let camera;
 
 // setup nconf to pull in environment variables and commandline flags
 nconf.argv()
@@ -57,6 +60,7 @@ var box = blessed.box({
 		}
 	}
 });
+
 // create status box to display messages
 var statusBox = blessed.box({
 	bottom: '0',
@@ -118,22 +122,22 @@ if (nconf.get('testDimensions')) {
 
 // main demo loop, start the camera and call render on each frame
 function runDemo () {
-	// TODO(CAW) Should be able to modify camera cam = new cv.VideoCapture idx, add line after to call cam.set(CV_CAP_PROP_FRAME_WIDTH, 640); cam.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
-	// init cam
-	webcam = camera.createStream(idx);
-	webcam.on('error', function (err) {
-		box.setContent('error reading data' + err)
-	});
-	// frame ready
-	webcam.on('data', function (buffer) {
-		// render the output
-		render(buffer);
-	});
+	const camWidth = 320;
+	const camHeigt = 240;
+	camera = new cv.VideoCapture(idx);
 
-	// start the recording
+	camera.setWidth(camWidth);
+	camera.setHeight(camHeigt);
+	console.log('setup camera');
 	setTimeout(function() {
-		webcam.snapshot(function (err, buffer){});
-		webcam.record(refreshRate, function (buffers){});
+		setInterval(function () {
+			camera.read(function (err, img) {
+				if (err)
+					return console.error('error reading camera: ' + err);
+
+				render(img);
+			});
+		}, camInterval);
 	}, 100);
 }
 
@@ -150,15 +154,17 @@ function runDimensionTest () {
 
 }
 
-function render(buffer) {
+let running = false;
+function render(img) {
 	try {
+		if (running) {
+			return;
+		}
+		running = true;
+		img.resize(newWidth, newHeight);
 		// draw the image to a canvas and size it correctly
-		var pic = new Canvas.Image;
-		pic.src = buffer;
-		var ctx = (new Canvas(newWidth, newHeight)).getContext('2d');
-		ctx.drawImage(pic, 0, 0, newWidth, newHeight);
 		// convert to frame to text and display result
-		box.setContent(ascii.init('cli', ctx, pic, newWidth, newHeight, noVid));
+		box.setContent(ascii.init('cli', img, img.width(), img.height(), noVid));
 		screen.render();
 	} catch (ex) {
 		box.setContent('error: ' + ex);
@@ -172,7 +178,6 @@ function takeSnapShot (complete) {
 function _exitHandler() {
 	console.log('cleaning up');
 	try {
-		webcam.destroy();
 		program.disableMouse();
 	} catch (ex) {
 		console.error('error in cleanup: ' + ex);

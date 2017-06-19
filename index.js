@@ -155,6 +155,7 @@ function runDimensionTest () {
 }
 
 let running = false;
+let txt;
 function render(img) {
 	try {
 		if (running) {
@@ -164,8 +165,10 @@ function render(img) {
 		img.resize(newWidth, newHeight);
 		// draw the image to a canvas and size it correctly
 		// convert to frame to text and display result
-		box.setContent(ascii.init('cli', img, img.width(), img.height(), noVid));
+		txt = ascii.init('cli', img, img.width(), img.height(), noVid);
+		box.setContent(txt);
 		screen.render();
+		running = false;
 	} catch (ex) {
 		box.setContent('error: ' + ex);
 	}

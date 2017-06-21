@@ -26,16 +26,16 @@ nconf.argv()
     .env()
     .file({ file: 'config.json' });
 
-var screenCaptureCommand = nconf.get('screenCaptureCommand'),
-	defaultStatus = 'running...',
-    idx = nconf.get('idx'),
-	noVid = nconf.get('noVideo'),
-	refreshRate = nconf.get('refreshRate'),
-	statusHeight = nconf.get('statusHeight'),
-	newWidth = nconf.get('newWidth'),
-	newHeight = nconf.get('newHeight'),
-	width = '850',
-	webcam;
+let screenCaptureCommand = nconf.get('screenCaptureCommand');
+let defaultStatus = 'running...';
+let idx = nconf.get('idx');
+let noVid = nconf.get('noVideo');
+let refreshRate = nconf.get('refreshRate');
+let statusHeight = nconf.get('statusHeight');
+let newWidth = nconf.get('newWidth');
+let newHeight = nconf.get('newHeight');
+const runColorTest = nconf.get('runColorTest');
+let width = '850';
 
 
 // Create a screen object for
@@ -89,6 +89,25 @@ box.focus();
 
 // Quit on Escape, q, or Control-C.
 screen.key(['escape', 'q', 'C-c'], _exitHandler);
+screen.key(['d'], function() {
+	newWidth++;
+	statusBox.setContent(newWidth + 'x' + newHeight);
+});
+screen.key('a', function() {
+	newWidth--;
+	statusBox.setContent(newWidth + 'x' + newHeight);
+});
+screen.key(['w'], function() {
+	newHeight++;
+	statusBox.setContent(newWidth + 'x' + newHeight);
+});
+screen.key(['s'], function() {
+	newHeight--;
+	statusBox.setContent(newWidth + 'x' + newHeight);
+});
+
+screen.key('');
+
 process.on('exit', _exitHandler);
 process.on('SIGINT', _exitHandler);
 
@@ -129,11 +148,11 @@ function runDemo () {
 	camera.setWidth(camWidth);
 	camera.setHeight(camHeigt);
 	console.log('setup camera');
-	setTimeout(function() {
+	setTimeout(function () {
 		setInterval(function () {
 			camera.read(function (err, img) {
 				if (err)
-					return console.error('error reading camera: ' + err);
+					return statusBox.setContent('error reading camera: ' + err);
 
 				render(img);
 			});
@@ -162,15 +181,21 @@ function render(img) {
 			return;
 		}
 		running = true;
+
+		if (img.width() <= 0) {
+			running = false;
+			return;
+		}
+
 		img.resize(newWidth, newHeight);
 		// draw the image to a canvas and size it correctly
 		// convert to frame to text and display result
-		txt = ascii.init('cli', img, img.width(), img.height(), noVid);
+		txt = ascii.init('cli', img, newWidth, newHeight, noVid);
 		box.setContent(txt);
 		screen.render();
 		running = false;
 	} catch (ex) {
-		box.setContent('error: ' + ex);
+		statusBox.setContent('error: ' + ex);
 	}
 }
 

@@ -35,8 +35,10 @@ let statusHeight = nconf.get('statusHeight');
 let newWidth = nconf.get('newWidth');
 let newHeight = nconf.get('newHeight');
 const runColorTest = nconf.get('runColorTest');
-let width = '850';
 
+let width = '850';
+let running = false;
+let txt;
 
 // Create a screen object for
 var screen = blessed.screen(),
@@ -119,6 +121,7 @@ screen.on('mouse', function(data) {
 		takeSnapShot(function (err) {
 			if (err) {
 				statusBox.setContent('error: ' + err);
+				screen.render();
 			} else {
 				statusBox.setContent('You look great kid!');
 				setTimeout(function () {
@@ -141,23 +144,48 @@ if (nconf.get('testDimensions')) {
 
 // main demo loop, start the camera and call render on each frame
 function runDemo () {
-	const camWidth = 320;
-	const camHeigt = 240;
-	camera = new cv.VideoCapture(idx);
+	if (!runColorTest) {
+		const camWidth = 320;
+		const camHeigt = 240;
+		camera = new cv.VideoCapture(idx);
 
-	camera.setWidth(camWidth);
-	camera.setHeight(camHeigt);
-	console.log('setup camera');
-	setTimeout(function () {
-		setInterval(function () {
-			camera.read(function (err, img) {
-				if (err)
-					return statusBox.setContent('error reading camera: ' + err);
+		camera.setWidth(camWidth);
+		camera.setHeight(camHeigt);
+		console.log('setup camera');
+		setTimeout(function () {
+			setInterval(function () {
+				camera.read(function (err, img) {
+					if (err)
+						return statusBox.setContent('error reading camera: ' + err);
 
+					render(img);
+				});
+			}, camInterval);
+		}, 100);
+	} else {
+		try {
+			statusBox.setContent('running color test');
+			screen.render();
+			// special test mode which renders a single still image
+			const imgFile = fs.readFileSync('./colorTest.png')
+			cv.readImage(imgFile.slice(0), function (err, img) {
+				if (err) {
+					statusBox.setContent('error: ' + err);
+					screen.render();
+					return;
+				}
+
+				statusBox.setContent('rendering test input');
+				screen.render();
 				render(img);
-			});
-		}, camInterval);
-	}, 100);
+				statusBox.setContent('rendered test image');
+				screen.render();
+			})
+		} catch (ex) {
+			statusBox.setContent('error rendering test: ' + ex);
+			screen.render();
+		}
+	}
 }
 
 function runDimensionTest () {
@@ -173,8 +201,6 @@ function runDimensionTest () {
 
 }
 
-let running = false;
-let txt;
 function render(img) {
 	try {
 		if (running) {
@@ -196,6 +222,7 @@ function render(img) {
 		running = false;
 	} catch (ex) {
 		statusBox.setContent('error: ' + ex);
+		screen.render();
 	}
 }
 

@@ -38,6 +38,7 @@ const runColorTest = nconf.get('runColorTest');
 
 let width = '850';
 let running = false;
+let foundGoodFrame = false;
 let txt;
 
 // Create a screen object for
@@ -81,13 +82,6 @@ var statusBox = blessed.box({
 		}
 	}
 });
-// add boxes to screen
-screen.append(box);
-screen.append(statusBox);
-// Render the screen.
-screen.render();
-// Focus our element.
-box.focus();
 
 // Quit on Escape, q, or Control-C.
 screen.key(['escape', 'q', 'C-c'], _exitHandler);
@@ -213,6 +207,19 @@ function render(img) {
 			return;
 		}
 
+		// the first time we get a good frame erase messages left by opencv
+		if (!foundGoodFrame) {
+			foundGoodFrame = true;
+			// clear screen and append our ui elements
+			program.clear();
+			// add boxes to screen
+			screen.append(box);
+			screen.append(statusBox);
+			// Render the screen.
+			screen.render();
+			// Focus our element.
+			box.focus();
+		}
 		img.resize(newWidth, newHeight);
 		// draw the image to a canvas and size it correctly
 		// convert to frame to text and display result

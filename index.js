@@ -47,7 +47,7 @@ var screen = blessed.screen(),
 program.enableMouse();
 // create box to display hello world
 var box = blessed.box({
-	top: 'center',
+	top: 0,
 	left: 'center',
 	width: width,
 	height: '900',

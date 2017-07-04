@@ -8,7 +8,7 @@
     "newHeight": 46,
     "newWidth": 155,
     "statusHeight": "60",
-    "screenCaptureCommand": "screencapture -R150,60,1618,950",
+    "screenCaptureCommand": "import -window root -crop 300x300+81+350 png:screenshot2.png",
     "twitterStatus": "#apitest Every picture tells a story...",
     "consumer_key": "",
     "consumer_secret": "",

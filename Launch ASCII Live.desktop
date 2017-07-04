@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=true
+Icon=mate-panel-launcher
+Icon[en_US]=mate-panel-launcher
+Name[en_US]=Launch ASCII Live
+Exec=mate-terminal --load-config=/home/chris/ASCIILiveGalleryHopDemo//mateTerminal.conf  -e '/home/chris/ASCIILiveGalleryHopDemo/start.sh'
+Name=Launch ASCII Live

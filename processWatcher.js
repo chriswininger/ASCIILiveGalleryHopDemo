@@ -27,6 +27,7 @@ process.on('SIGINT', _exitHandler);
 
 function _killMainProcess () {
 	console.log('stopping main process: ' + mainProc.pid);
+	mainProc.removeAllListeners();
 	mainProc.kill();
 }
 
@@ -38,6 +39,10 @@ function _refreshMainProcess () {
 function _startMainProc () {
 	mainProc = spawn('node', ['index.js'], {
 		stdio: 'inherit'
+	});
+	mainProc.on('exit', function(){
+		console.log('manual exit called');
+		process.exit(0);
 	});
 }
 

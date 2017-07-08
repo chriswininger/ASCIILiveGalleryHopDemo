@@ -10,15 +10,16 @@
  * @type {childrenOfPid|exports}
  */
 var psTree = require('ps-tree');
-var exec = require('child_process').exec;
-var spawn = require('child_process').spawn;
+const { spawn, exec, fork } = require('child_process');
 
 var MINUTE= 60000;
 var interval = MINUTE*5;
 
 var mainProc;
+var fileWatcherProc;
 
 _startMainProc();
+//_startFileWatcherProc();
 setInterval(_refreshMainProcess, interval);
 
 
@@ -44,6 +45,19 @@ function _startMainProc () {
 		console.log('manual exit called');
 		process.exit(0);
 	});
+}
+
+function _startFileWatcherProc () {
+	fileWatcherProc = fork('node', ['./lib/fileWatcher.js'], {
+		stdio: 'ignore'
+	});
+	fileWatcher.on('exit', function(){
+		console.log('file watcher died');
+	});
+}
+
+function _stopFileWatcherProc() {
+
 }
 
 function _exitHandler () {

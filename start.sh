@@ -1,11 +1,12 @@
 #!/bin/bash
 source ~/.bashrc
 source ~/.nvm/nvm.sh
-cd /home/chris/ASCIILiveGalleryHopDemo
 source ~/.bashrc
 source ~/.nvm/nvm.sh
 export TERM=xterm-256color
-node ./lib/fileWatcher.js &&
-~/.nvm/versions/node/v6.9.2/bin/node /home/chris/ASCIILiveGalleryHopDemo/index.js
+#cd /home/chris/ASCIILiveGalleryHopDemo/lib
+#node ./fileWatcher.js &
+cd /home/chris/ASCIILiveGalleryHopDemo
+~/.nvm/versions/node/v6.9.2/bin/node /home/chris/ASCIILiveGalleryHopDemo/processWatcher.js
 #read -p "Press enter to continue"
 

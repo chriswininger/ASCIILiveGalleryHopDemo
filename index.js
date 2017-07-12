@@ -18,8 +18,9 @@ const exec = require('child_process').exec;
 const blessed = require('blessed');
 const nconf = require('nconf');
 const crypto = require('crypto');
-
+const snapWaitDurration = 2000;
 let camera;
+let lastSnapShot;
 
 // setup nconf to pull in environment variables and commandline flags
 nconf.argv()
@@ -112,6 +113,12 @@ screen.on('mouse', function(data) {
 	if (data.action === 'mouseup') return;
 
 	if (data.action === 'mousedown' && data.button === 'left') {
+		if (lastSnapShot && (Date.now() - lastSnapShot < snapWaitDurration)) {
+			statusBox.setContent('Too fast too furious! Picture in process...');
+			return;
+		}
+
+		lastSnapShot = Date.now();
 		takeSnapShot(function (err) {
 			if (err) {
 				statusBox.setContent('error: ' + err);

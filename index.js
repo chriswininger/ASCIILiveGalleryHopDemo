@@ -14,7 +14,7 @@ const camFps = 32;
 const camInterval = 1000 /camFps;
 const ascii = require(__dirname + '/lib/ascii/ascii.js');
 const fs = require('fs');
-const exec = require('child_process').exec;
+const { exec, fork, spawn } = require('child_process');
 const blessed = require('blessed');
 const nconf = require('nconf');
 const crypto = require('crypto');
@@ -27,6 +27,7 @@ nconf.argv()
     .env()
     .file({ file: 'config.json' });
 
+let fileWatcherProc;
 let screenCaptureCommand = nconf.get('screenCaptureCommand');
 let defaultStatus = 'running...';
 let idx = nconf.get('idx');
@@ -65,6 +66,7 @@ var box = blessed.box({
 	}
 });
 
+_startFileWatcherProc();
 // create status box to display messages
 var statusBox = blessed.box({
 	bottom: '0',
@@ -248,9 +250,21 @@ function _exitHandler() {
 	console.log('cleaning up');
 	try {
 		program.disableMouse();
+		fileWatcherProc.kill();
 	} catch (ex) {
 		console.error('error in cleanup: ' + ex);
 	}
 
 	return process.exit(0);
 }
+
+
+function _startFileWatcherProc () {
+        fileWatcherProc = spawn('/home/chris/.nvm/versions/node/v6.9.2/bin/node', [__dirname + '/lib/fileWatcher.js'], {
+                stdio: 'ignore'
+        });
+        fileWatcherProc.on('exit', function(){
+                // console.log('file watcher died');
+        });
+}
+

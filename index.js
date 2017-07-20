@@ -105,17 +105,8 @@ screen.key(['s'], function() {
 	statusBox.setContent(newWidth + 'x' + newHeight);
 });
 
-screen.key('');
-
-process.on('exit', _exitHandler);
-process.on('SIGINT', _exitHandler);
-
-// take snapshots when left mouse is clicked
-screen.on('mouse', function(data) {
-	if (data.action === 'mouseup') return;
-
-	if (data.action === 'mousedown' && data.button === 'left') {
-		if (lastSnapShot && (Date.now() - lastSnapShot < snapWaitDurration)) {
+screen.key('p', function() {
+	if (lastSnapShot && (Date.now() - lastSnapShot < snapWaitDurration)) {
 			statusBox.setContent('Too fast too furious! Picture in process...');
 			return;
 		}
@@ -132,8 +123,13 @@ screen.on('mouse', function(data) {
 				}, 4000);
 			}
 		});
-	}
+
 });
+
+screen.key('');
+
+process.on('exit', _exitHandler);
+process.on('SIGINT', _exitHandler);
 
 if (nconf.get('testDimensions')) {
 	// special test flag to just show the boxes with the vertical axis numbered

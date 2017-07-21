@@ -32,7 +32,9 @@ function _killMainProcess () {
 	mainProc.kill();
 }
 
+let restarting = false;
 function _refreshMainProcess () {
+	restarting = true;
 	_killMainProcess();
 	_startMainProc();
 }
@@ -41,9 +43,14 @@ function _startMainProc () {
 	mainProc = spawn('node', ['index.js'], {
 		stdio: 'inherit'
 	});
-	mainProc.on('exit', function(){
-		console.log('manual exit called');
-		process.exit(0);
+	mainProc.on('exit', function(args){
+		if (restarting) {
+			console.log('restarting the process');
+			restarting = false;
+		} else {
+			console.log('manual exit called');
+			process.exit(0);
+		}
 	});
 }
 

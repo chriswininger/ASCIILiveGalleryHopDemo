@@ -2,7 +2,9 @@
 2. rename config.example to config.json
   a. fill in twitter api key info
   b. other entries may need to be tweaked for the image to fit in the box on your screen
-
+3. set the filewatcher up in forever, by cd to [project]/lib and run
+   forever start ./fileWatcher.js -o fileWather.log -e fileWatcher.error.log
+ 
 -- Requirements --
 Currently tested with Node 6.9.2
 Best ran in terminal with monospace 8pt font (maybe 10pt) (will be faster but with less detail the larger the font)
